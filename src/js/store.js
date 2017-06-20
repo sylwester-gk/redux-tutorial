@@ -1,4 +1,4 @@
-import {createStore} from "redux";
+import {combineReducers, createStore} from "redux";
 import counterReducer from './reducer/counter'
 import todosReducer from './reducer/todosReducer'
 import visibilityFilter from './reducer/visibilityFilter'
@@ -10,25 +10,30 @@ import visibilityFilter from './reducer/visibilityFilter'
  * @param action
  * @returns {{todos, counter, visibilityFilter}}
  */
-const app = (state = {}, action) => {
-    return {
-        todos: todosReducer(
-            state.todos,
-            action
-        ),
-        counter: counterReducer(
-            state.counter,
-            action
-        ),
-        visibilityFilter: visibilityFilter(
-            state.visibilityFilter,
-            action
-        )
-    };
-};
+// const app = (state = {}, action) => {
+//     return {
+//         todos: todosReducer(
+//             state.todos,
+//             action
+//         ),
+//         counter: counterReducer(
+//             state.counter,
+//             action
+//         ),
+//         visibilityFilter: visibilityFilter(
+//             state.visibilityFilter,
+//             action
+//         )
+//     };
+// };
+// above code is the same as calling combineReducers
+const reducer = combineReducers({
+    todos: todosReducer,
+    counter: counterReducer,
+    visibilityFilter
+});
 
-
-const store = createStore(app);
+const store = createStore(reducer);
 
 function logState() {
     console.log(store.getState());
