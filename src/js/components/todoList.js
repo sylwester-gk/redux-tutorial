@@ -1,29 +1,62 @@
-import React from "react"
-import store from '../stores/store';
-import todos from '../reducer/todos'
+import React, {Component} from "react"
+import {todoStore} from '../reducer/todosReducer'
 
-class TodoList extends React.Component {
+class TodoList extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            todos: todoStore.getState(),
+            currentTodo: 0,
+            currentText: ""
+        };
 
-        // store.subscribe(() => {
-        //     this.setState({
-        //         value: store.getState()
-        //     });
-        // });
 
-        // this.increment = this.increment.bind(this);
+        todoStore.subscribe(() => {
+            this.setState({
+                todos: todoStore.getState()
+            });
+        });
+
+        this.toggle = this.toggle.bind(this);
+        this.addTodo = this.addTodo.bind(this);
+        this.updateText = this.updateText.bind(this);
     }
 
-    // increment(e) {
-    // };
+    toggle(e) {
+        console.log("togle");
+        todoStore.dispatch({type: 'TOGGLE_TODO', id: 0});
+
+    };
+
+    addTodo(e) {
+        todoStore.dispatch({type: 'ADD_TODO', id: this.state.currentTodo, text: this.state.currentText});
+        this.state.currentTodo += 1;
+    };
+
+    updateText(e) {
+        this.state.currentText = e.target.value;
+    }
 
     render() {
+        let map = this.state.todos.map((item) => {
+                return <div>
+                    <span>{item.id}</span>
+                    <input type="checkbox" value={item.completed} onChange={this.toggle}/>
+                    <span>{item.text}</span>
+                </div>
+            }
+        );
         return (
-            <div className='row'>
-                <h2>To Do List Example</h2>
+            <div>
+                <div className='row'>
+                    <input type="text" onChange={this.updateText}/>
+                    <button onClick={this.addTodo}>Add To do</button>
+                </div>
+                <div className='row'>
+                    {map}
+                </div>
             </div>
+
         );
     }
 }
