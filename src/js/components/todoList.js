@@ -22,9 +22,9 @@ class TodoList extends Component {
         this.updateText = this.updateText.bind(this);
     }
 
-    toggle(e) {
+    toggle(item, e) {
         console.log("togle");
-        todoStore.dispatch({type: 'TOGGLE_TODO', id: 0});
+        todoStore.dispatch({type: 'TOGGLE_TODO', id: item.id});
 
     };
 
@@ -39,9 +39,9 @@ class TodoList extends Component {
 
     render() {
         let map = this.state.todos.map((item) => {
-                return <div>
+                return <div key={item.id}>
                     <span>{item.id}</span>
-                    <input type="checkbox" value={item.completed} onChange={this.toggle}/>
+                    <input type="checkbox" value={item.completed} onChange={this.toggle.bind(this, item)}/>
                     <span>{item.text}</span>
                 </div>
             }
