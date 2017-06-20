@@ -10,7 +10,6 @@ class TodoList extends Component {
             currentText: ""
         };
 
-
         store.subscribe(() => {
             this.setState({
                 todos: store.getState().todos
