@@ -1,6 +1,6 @@
 import deepFreeze from 'deep-freeze';
 import expect from 'expect';
-import {todosReducer} from '../reducer/todosReducer'
+import todosReducer from '../reducer/todosReducer'
 
 
 const testAddTodo = () => {

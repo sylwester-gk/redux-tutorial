@@ -1,14 +1,14 @@
 import React from "react"
-import store from '../stores/store';
+import store from '../store'
 
 class SimpleCounter extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {value: store.getState()};
+        this.state = {value: store.getState().counter};
 
         store.subscribe(() => {
             this.setState({
-                value: store.getState()
+                value: store.getState().counter
             });
         });
 

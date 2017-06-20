@@ -1,19 +1,19 @@
 import React, {Component} from "react"
-import {todoStore} from '../reducer/todosReducer'
+import store from '../store'
 
 class TodoList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            todos: todoStore.getState(),
+            todos: store.getState().todos,
             currentTodo: 0,
             currentText: ""
         };
 
 
-        todoStore.subscribe(() => {
+        store.subscribe(() => {
             this.setState({
-                todos: todoStore.getState()
+                todos: store.getState().todos
             });
         });
 
@@ -23,13 +23,12 @@ class TodoList extends Component {
     }
 
     toggle(item, e) {
-        console.log("togle");
-        todoStore.dispatch({type: 'TOGGLE_TODO', id: item.id});
+        store.dispatch({type: 'TOGGLE_TODO', id: item.id});
 
     };
 
     addTodo(e) {
-        todoStore.dispatch({type: 'ADD_TODO', id: this.state.currentTodo, text: this.state.currentText});
+        store.dispatch({type: 'ADD_TODO', id: this.state.currentTodo, text: this.state.currentText});
         this.state.currentTodo += 1;
     };
 
