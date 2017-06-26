@@ -7,4 +7,4 @@ import testAll from './test/test'
 testAll();
 
 ReactDOM.render(<SimpleCounter />, document.getElementById('simple-counter'));
-ReactDOM.render(<TodoList />, document.getElementById('todos'));
+ReactDOM.render(<TodoList filter="SHOW_ALL"/>, document.getElementById('todos'));

@@ -1,24 +1,37 @@
 import React, {Component} from "react"
 import store from '../store'
+import FilterLink from './FilterLink'
+
+const getVisibleTodos = (todos, filter) => {
+    switch (filter) {
+        case "SHOW_ALL":
+            return todos;
+        case  "SHOW_ACTIVE":
+            return todos.filter( item => !item.completed);
+        case "SHOW_COMPLETED":
+            return todos.filter( item => item.completed);
+        default:
+            return todos;
+    }
+};
 
 class TodoList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            todos: store.getState().todos,
+            todos: getVisibleTodos(store.getState().todos, this.props.filter),
             currentTodo: 0,
-            currentText: ""
         };
 
         store.subscribe(() => {
+            let state = store.getState();
             this.setState({
-                todos: store.getState().todos
+                todos:  getVisibleTodos(state.todos, state.visibilityFilter),
             });
         });
 
         this.toggle = this.toggle.bind(this);
         this.addTodo = this.addTodo.bind(this);
-        this.updateText = this.updateText.bind(this);
     }
 
     toggle(item, e) {
@@ -27,31 +40,48 @@ class TodoList extends Component {
     };
 
     addTodo(e) {
-        store.dispatch({type: 'ADD_TODO', id: this.state.currentTodo, text: this.state.currentText});
-        this.state.currentTodo += 1;
+        store.dispatch({type: 'ADD_TODO', id: this.state.currentTodo++, text: this.input.value});
     };
 
-    updateText(e) {
-        this.state.currentText = e.target.value;
-    }
-
     render() {
-        let map = this.state.todos.map((item) => {
-                return <div key={item.id}>
-                    <span>{item.id}</span>
-                    <input type="checkbox" value={item.completed} onChange={this.toggle.bind(this, item)}/>
-                    <span>{item.text}</span>
-                </div>
-            }
-        );
         return (
             <div>
                 <div className='row'>
-                    <input type="text" onChange={this.updateText}/>
+                    <input ref={node => {
+                        this.input = node
+                    } }/>
                     <button onClick={this.addTodo}>Add To do</button>
                 </div>
                 <div className='row'>
-                    {map}
+                    <ul>
+                    {
+                        this.state.todos.map(item =>
+                            <li key={item.id}>
+                                <input type="checkbox"
+                                       value={item.completed}
+                                       onChange={this.toggle.bind(this, item)}
+                                       checked={item.completed}/>&nbsp;
+                                <span onClick={() => {
+                                            this.toggle(item);
+                                        }}
+                                      style={{textDecoration: item.completed ? 'line-through' : 'none'}}
+                                >{item.id}. {item.text}</span>
+                            </li>
+                        )}
+                    </ul>
+                </div>
+                <div className="row">
+                    <FilterLink
+                        filter="SHOW_ALL"
+                    >ALL</FilterLink>
+                    {" | "}
+                    <FilterLink
+                        filter="SHOW_ACTIVE"
+                    >ACTIVE</FilterLink>
+                    {" | "}
+                    <FilterLink
+                        filter="SHOW_COMPLETED"
+                    >COMPLETED</FilterLink>
                 </div>
             </div>
 
