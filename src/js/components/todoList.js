@@ -18,15 +18,18 @@ const getVisibleTodos = (todos, filter) => {
 class TodoList extends Component {
     constructor(props) {
         super(props);
+        let state = store.getState();
         this.state = {
-            todos: getVisibleTodos(store.getState().todos, this.props.filter),
+            todos: getVisibleTodos(state.todos, this.props.filter),
             currentTodo: 0,
+            filter: state.visibilityFilter
         };
 
         store.subscribe(() => {
             let state = store.getState();
             this.setState({
                 todos:  getVisibleTodos(state.todos, state.visibilityFilter),
+                filter: state.visibilityFilter,
             });
         });
 
@@ -36,7 +39,6 @@ class TodoList extends Component {
 
     toggle(item, e) {
         store.dispatch({type: 'TOGGLE_TODO', id: item.id});
-
     };
 
     addTodo(e) {
@@ -73,14 +75,17 @@ class TodoList extends Component {
                 <div className="row">
                     <FilterLink
                         filter="SHOW_ALL"
+                        currentFilter={this.state.filter}
                     >ALL</FilterLink>
                     {" | "}
                     <FilterLink
                         filter="SHOW_ACTIVE"
+                        currentFilter={this.state.filter}
                     >ACTIVE</FilterLink>
                     {" | "}
                     <FilterLink
                         filter="SHOW_COMPLETED"
+                        currentFilter={this.state.filter}
                     >COMPLETED</FilterLink>
                 </div>
             </div>
